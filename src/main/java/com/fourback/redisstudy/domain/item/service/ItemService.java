@@ -35,7 +35,7 @@ public class ItemService {
         return ItemDetailResponseDto.of(inquiryMap, isLiked);
     }
 
-    public List<ItemInquiryResponseDto> getSome(String userId, List<String> itemIds) {
+    public List<ItemInquiryResponseDto> getSome(List<String> itemIds) {
         List<String> keys = itemIds.stream().map(itemId -> PrefixEnum.ITEM.getPrefix() + itemId).toList();
 
         List<Map<String, String>> inquiryMaps = redisRepository.hGetAllFromKeys(keys);

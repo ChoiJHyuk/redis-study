@@ -31,9 +31,9 @@ public class ItemController {
         return ResponseEntity.ok(inquiryResponseDto);
     }
 
-    @GetMapping("/{user-id}")
-    public ResponseEntity<?> getSomeItems(@PathVariable("user-id") String userId, @RequestBody List<String> itemIds) {
-        List<ItemInquiryResponseDto> itemInquiryResponseDtoList = itemService.getSome(userId, itemIds);
+    @GetMapping
+    public ResponseEntity<?> getSomeItems(@RequestBody List<String> itemIds) {
+        List<ItemInquiryResponseDto> itemInquiryResponseDtoList = itemService.getSome(itemIds);
 
         return ResponseEntity.ok(itemInquiryResponseDtoList);
     }

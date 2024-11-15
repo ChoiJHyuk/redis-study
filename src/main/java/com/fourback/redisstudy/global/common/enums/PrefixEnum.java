@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum PrefixEnum {
 
     USER("user:"),
-    ITEM("item:");
+    ITEM("item:"),
+    UNIQUE_USER("user:unique");
 
     private final String prefix;
 

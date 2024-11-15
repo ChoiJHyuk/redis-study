@@ -39,4 +39,12 @@ public class RedisRepository {
                 objects, objectMapper.getTypeFactory().constructCollectionType(List.class, Map.class)
         );
     }
+
+    public void sAdd(String key, String member) {
+        redisTemplate.opsForSet().add(key, member);
+    }
+
+    public Boolean sIsMember(String key, String member) {
+        return redisTemplate.opsForSet().isMember(key, member);
+    }
 }

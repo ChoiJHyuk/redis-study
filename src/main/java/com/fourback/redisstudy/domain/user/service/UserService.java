@@ -20,10 +20,17 @@ public class UserService {
     public UserCreateResponseDto create(UserCreateRequestDto createRequestDto) {
         String userId = RandomUtil.genId();
 
+        String username = createRequestDto.getUsername();
+
+        if (redisRepository.sIsMember(PrefixEnum.UNIQUE_USER.getPrefix(), username)) {
+            throw new RuntimeException("중복된 아이디");
+        }
+
         String encryptPassword = EncryptionUtil.encryptPassword(createRequestDto.getPassword());
         createRequestDto.setPassword(encryptPassword);
 
         redisRepository.hSet(PrefixEnum.USER.getPrefix() + userId, createRequestDto.toMap());
+        redisRepository.sAdd(PrefixEnum.UNIQUE_USER.getPrefix(), username);
 
         return UserCreateResponseDto.from(userId);
     }

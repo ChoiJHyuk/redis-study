@@ -15,7 +15,7 @@ import java.util.List;
 public class ItemQueryController {
     private final ItemQueryService itemQueryService;
 
-    @GetMapping("/{user-id}/{item-id}")
+    @GetMapping("/detail/{user-id}/{item-id}")
     public ResponseEntity<?> getItem(@PathVariable("user-id") String userId, @PathVariable("item-id") String itemId) {
         ItemDetailResponseDto inquiryResponseDto = itemQueryService.get(userId, itemId);
 
@@ -24,23 +24,30 @@ public class ItemQueryController {
 
     @GetMapping
     public ResponseEntity<?> getSomeItems(@RequestBody List<String> itemIds) {
-        List<ItemInquiryResponseDto> itemInquiryResponseDtoList = itemQueryService.getSome(itemIds);
+        List<ItemInquiryResponseDto> inquiryResponseDtoList = itemQueryService.getSome(itemIds);
 
-        return ResponseEntity.ok(itemInquiryResponseDtoList);
+        return ResponseEntity.ok(inquiryResponseDtoList);
     }
 
-    @GetMapping("/{user-id}/liked")
-    public ResponseEntity<?> getSomeItems(@PathVariable("user-id") String userId) {
-        List<ItemInquiryResponseDto> itemInquiryResponseDtoList = itemQueryService.getSome(userId);
+    @GetMapping("/liked/{user-id}")
+    public ResponseEntity<?> getSomeLikedItems(@PathVariable("user-id") String userId) {
+        List<ItemInquiryResponseDto> inquiryResponseDtoList = itemQueryService.getSome(userId);
 
-        return ResponseEntity.ok(itemInquiryResponseDtoList);
+        return ResponseEntity.ok(inquiryResponseDtoList);
     }
 
     @GetMapping("/intersection/{user-id}/{another-user-id}")
-    public ResponseEntity<?> getSomeItems(@PathVariable("user-id") String userId,
-                                          @PathVariable("another-user-id") String anotherUserId) {
-        List<ItemInquiryResponseDto> itemInquiryResponseDtoList = itemQueryService.getSome(userId, anotherUserId);
+    public ResponseEntity<?> getSomeIntersectionItems(@PathVariable("user-id") String userId,
+                                                      @PathVariable("another-user-id") String anotherUserId) {
+        List<ItemInquiryResponseDto> inquiryResponseDtoList = itemQueryService.getSome(userId, anotherUserId);
 
-        return ResponseEntity.ok(itemInquiryResponseDtoList);
+        return ResponseEntity.ok(inquiryResponseDtoList);
+    }
+
+    @GetMapping("/order-end")
+    public ResponseEntity<?> getSomeItemsByEndOrder(@RequestParam(value = "last-end-at", required = false) Long lastEndAt) {
+        List<ItemInquiryResponseDto> inquiryResponseDtoList = itemQueryService.getSome(lastEndAt);
+
+        return ResponseEntity.ok(inquiryResponseDtoList);
     }
 }

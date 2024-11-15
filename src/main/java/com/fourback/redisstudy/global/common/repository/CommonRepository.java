@@ -1,12 +1,15 @@
 package com.fourback.redisstudy.global.common.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fourback.redisstudy.global.common.enums.PrefixEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,6 +48,15 @@ public class CommonRepository {
     public void hIncrBy(String key, String field, long amount) {
         HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
         hashOperations.increment(key, field, amount);
+    }
+
+    public Set<String> zRange(Long lastEndAt) {
+        Long millisTime = lastEndAt;
+        if(millisTime == null)
+            millisTime = LocalDate.now().atStartOfDay(ZoneId.of("Asia/Seoul")).toInstant().toEpochMilli();
+
+        return redisTemplate.opsForZSet().rangeByScore(
+                PrefixEnum.ITEM_ENDING_AT.getPrefix(), millisTime, Long.MAX_VALUE, 0, 3L);
     }
 
     // set

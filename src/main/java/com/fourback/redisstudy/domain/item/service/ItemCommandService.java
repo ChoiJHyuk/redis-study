@@ -2,6 +2,7 @@ package com.fourback.redisstudy.domain.item.service;
 
 import com.fourback.redisstudy.domain.item.dto.request.ItemCreateRequestDto;
 import com.fourback.redisstudy.domain.item.dto.response.ItemCreateResponseDto;
+import com.fourback.redisstudy.domain.item.repository.ItemRepository;
 import com.fourback.redisstudy.global.common.enums.PrefixEnum;
 import com.fourback.redisstudy.global.common.repository.CommonRepository;
 import com.fourback.redisstudy.global.common.util.RandomUtil;
@@ -11,14 +12,14 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ItemCommandService {
+    private final ItemRepository itemRepository;
     private final CommonRepository commonRepository;
 
 
     public ItemCreateResponseDto create(ItemCreateRequestDto createRequestDto) {
         String itemId = RandomUtil.genId();
 
-        commonRepository.hSet(PrefixEnum.ITEM.getPrefix() + itemId, createRequestDto.toMap());
-        commonRepository.zAdd(PrefixEnum.ITEM_VIEW.getPrefix(), itemId, 0);
+        itemRepository.setupForCreateItem(itemId, createRequestDto.toMap(), createRequestDto.getEndingAt());
 
         return ItemCreateResponseDto.from(itemId);
     }

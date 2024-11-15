@@ -1,11 +1,13 @@
 package com.fourback.redisstudy.domain.item.dto.request;
 
+import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
 @Setter
 public class ItemCreateRequestDto {
     private String name;

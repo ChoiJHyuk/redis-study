@@ -8,7 +8,8 @@ public enum PrefixEnum {
     USER("user:"),
     ITEM("item:"),
     UNIQUE_USER("user:unique"),
-    USER_LIKE("user:like:");
+    USER_LIKE("user:like:"),
+    USERNAME("username");
 
     private final String prefix;
 

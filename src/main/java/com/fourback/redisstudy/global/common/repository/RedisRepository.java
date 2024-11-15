@@ -70,4 +70,13 @@ public class RedisRepository {
     public Set<String> sInter(String key, String anotherKey) {
         return redisTemplate.opsForSet().intersect(key, anotherKey);
     }
+
+    // sorted set
+    public void zAdd(String key, String member, double score) {
+        redisTemplate.opsForZSet().add(key, member, score);
+    }
+
+    public Double zScore(String key, String member) {
+        return redisTemplate.opsForZSet().score(key, member);
+    }
 }

@@ -1,8 +1,10 @@
 package com.fourback.redisstudy.domain.user.controller;
 
 import com.fourback.redisstudy.domain.user.dto.request.UserCreateRequestDto;
+import com.fourback.redisstudy.domain.user.dto.request.UserLoginRequestDto;
 import com.fourback.redisstudy.domain.user.dto.response.UserCreateResponseDto;
 import com.fourback.redisstudy.domain.user.dto.response.UserInquiryResponseDto;
+import com.fourback.redisstudy.domain.user.dto.response.UserLoginResponseDto;
 import com.fourback.redisstudy.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,13 @@ public class UserController {
         UserCreateResponseDto createResponseDto = userService.create(createRequestDto);
 
         return ResponseEntity.ok(createResponseDto);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody UserLoginRequestDto loginRequestDto) {
+        UserLoginResponseDto loginResponseDto = userService.login(loginRequestDto);
+
+        return ResponseEntity.ok(loginResponseDto);
     }
 
     @GetMapping("/{user-id}")

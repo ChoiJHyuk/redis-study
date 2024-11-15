@@ -1,8 +1,10 @@
 package com.fourback.redisstudy.domain.user.service;
 
 import com.fourback.redisstudy.domain.user.dto.request.UserCreateRequestDto;
+import com.fourback.redisstudy.domain.user.dto.request.UserLoginRequestDto;
 import com.fourback.redisstudy.domain.user.dto.response.UserCreateResponseDto;
 import com.fourback.redisstudy.domain.user.dto.response.UserInquiryResponseDto;
+import com.fourback.redisstudy.domain.user.dto.response.UserLoginResponseDto;
 import com.fourback.redisstudy.global.common.enums.PrefixEnum;
 import com.fourback.redisstudy.global.common.repository.RedisRepository;
 import com.fourback.redisstudy.global.common.util.EncryptionUtil;
@@ -31,6 +33,7 @@ public class UserService {
 
         redisRepository.hSet(PrefixEnum.USER.getPrefix() + userId, createRequestDto.toMap());
         redisRepository.sAdd(PrefixEnum.UNIQUE_USER.getPrefix(), username);
+        redisRepository.zAdd(PrefixEnum.USERNAME.getPrefix(), username, Integer.parseInt(userId, 16));
 
         return UserCreateResponseDto.from(userId);
     }
@@ -39,5 +42,23 @@ public class UserService {
         Map<String, String> inquiryMap = redisRepository.hGetAll(PrefixEnum.USER.getPrefix() + userId);
 
         return UserInquiryResponseDto.from(inquiryMap);
+    }
+
+    public UserLoginResponseDto login(UserLoginRequestDto loginRequestDto) {
+        Double decimalId = redisRepository.zScore(PrefixEnum.USERNAME.getPrefix(), loginRequestDto.getUsername());
+        if (decimalId == null) {
+            throw new RuntimeException("존재하지 않은 아이디");
+        }
+
+        String userId = Integer.toHexString(decimalId.intValue());
+
+        Map<String, String> userInquiryMap = redisRepository.hGetAll(PrefixEnum.USER.getPrefix() + userId);
+        String hashedPassword = userInquiryMap.get("password");
+
+        if (!EncryptionUtil.checkPassword(loginRequestDto.getPassword(), hashedPassword)) {
+            throw new RuntimeException("비밀번호 불일치");
+        }
+
+        return UserLoginResponseDto.from(userId);
     }
 }

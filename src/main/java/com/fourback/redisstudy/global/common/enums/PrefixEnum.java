@@ -5,9 +5,10 @@ import lombok.Getter;
 @Getter
 public enum PrefixEnum {
 
-    USER("user:");
+    USER("user:"),
+    ITEM("item:");
 
-    private String prefix;
+    private final String prefix;
 
     PrefixEnum(String prefix) {
         this.prefix = prefix;

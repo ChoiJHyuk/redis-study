@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Getter
 @Builder
-public class ItemInquiryResponseDto {
+public class ItemDetailResponseDto {
     private String name;
     private String description;
     private String imageUrl;
@@ -21,9 +21,10 @@ public class ItemInquiryResponseDto {
     private Integer views;
     private Integer likes;
     private Integer bids;
+    private Boolean isLiked;
 
-    public static ItemInquiryResponseDto of(Map<String, String> map) {
-        return ItemInquiryResponseDto.builder()
+    public static ItemDetailResponseDto of(Map<String, String> map, Boolean isLiked) {
+        return ItemDetailResponseDto.builder()
                 .name(map.get("name"))
                 .description(map.get("description"))
                 .imageUrl(map.get("imageUrl"))
@@ -36,6 +37,7 @@ public class ItemInquiryResponseDto {
                 .views(Integer.parseInt(map.get("views")))
                 .likes(Integer.parseInt(map.get("likes")))
                 .bids(Integer.parseInt(map.get("bids")))
+                .isLiked(isLiked)
                 .build();
     }
 }

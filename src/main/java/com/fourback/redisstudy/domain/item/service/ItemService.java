@@ -2,6 +2,7 @@ package com.fourback.redisstudy.domain.item.service;
 
 import com.fourback.redisstudy.domain.item.dto.request.ItemCreateRequestDto;
 import com.fourback.redisstudy.domain.item.dto.response.ItemCreateResponseDto;
+import com.fourback.redisstudy.domain.item.dto.response.ItemDetailResponseDto;
 import com.fourback.redisstudy.domain.item.dto.response.ItemInquiryResponseDto;
 import com.fourback.redisstudy.global.common.enums.PrefixEnum;
 import com.fourback.redisstudy.global.common.repository.RedisRepository;
@@ -26,17 +27,35 @@ public class ItemService {
         return ItemCreateResponseDto.from(itemId);
     }
 
-    public ItemInquiryResponseDto get(String itemId) {
+    public ItemDetailResponseDto get(String userId, String itemId) {
         Map<String, String> inquiryMap = redisRepository.hGetAll(PrefixEnum.ITEM.getPrefix() + itemId);
 
-        return ItemInquiryResponseDto.from(inquiryMap);
+        Boolean isLiked = redisRepository.sIsMember(PrefixEnum.USER_LIKE.getPrefix() + userId, itemId);
+
+        return ItemDetailResponseDto.of(inquiryMap, isLiked);
     }
 
-    public List<ItemInquiryResponseDto> getSome(List<String> itemIds) {
+    public List<ItemInquiryResponseDto> getSome(String userId, List<String> itemIds) {
         List<String> keys = itemIds.stream().map(itemId -> PrefixEnum.ITEM.getPrefix() + itemId).toList();
 
         List<Map<String, String>> inquiryMaps = redisRepository.hGetAllFromKeys(keys);
 
-        return inquiryMaps.stream().map(ItemInquiryResponseDto::from).toList();
+        return inquiryMaps.stream().map(ItemInquiryResponseDto::of).toList();
+    }
+
+    public void like(String userId, String itemId) {
+        Boolean inserted = redisRepository.sAdd(PrefixEnum.USER_LIKE.getPrefix() + userId, itemId);
+
+        if (inserted) {
+            redisRepository.hIncrBy(PrefixEnum.ITEM.getPrefix() + itemId, "likes", 1);
+        }
+    }
+
+    public void unlike(String userId, String itemId) {
+        Boolean removed = redisRepository.sRem(PrefixEnum.USER_LIKE.getPrefix() + userId, itemId);
+
+        if (removed) {
+            redisRepository.hIncrBy(PrefixEnum.ITEM.getPrefix() + itemId, "likes", -1);
+        }
     }
 }

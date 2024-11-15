@@ -16,6 +16,7 @@ public class RedisRepository {
     private final StringRedisTemplate redisTemplate;
     private final ObjectMapper objectMapper;
 
+    //hash
     public void hSet(String key, Map<String, String> fields) {
         HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
         hashOperations.putAll(key, fields);
@@ -40,11 +41,24 @@ public class RedisRepository {
         );
     }
 
-    public void sAdd(String key, String member) {
-        redisTemplate.opsForSet().add(key, member);
+    public void hIncrBy(String key, String field, long amount) {
+        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
+        hashOperations.increment(key, field, amount);
+    }
+
+    // set
+    public Boolean sAdd(String key, String member) {
+        Long addCount = redisTemplate.opsForSet().add(key, member);
+
+        return addCount != null && addCount > 0;
     }
 
     public Boolean sIsMember(String key, String member) {
         return redisTemplate.opsForSet().isMember(key, member);
+    }
+
+    public Boolean sRem(String key, String member) {
+        Long remCount = redisTemplate.opsForSet().remove(key, member);
+        return remCount != null && remCount > 0;
     }
 }

@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Repository
 @RequiredArgsConstructor
-public class RedisRepository {
+public class CommonRepository {
     private final StringRedisTemplate redisTemplate;
     private final ObjectMapper objectMapper;
 

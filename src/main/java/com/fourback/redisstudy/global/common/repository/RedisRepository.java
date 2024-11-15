@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Repository
 @RequiredArgsConstructor
@@ -60,5 +61,9 @@ public class RedisRepository {
     public Boolean sRem(String key, String member) {
         Long remCount = redisTemplate.opsForSet().remove(key, member);
         return remCount != null && remCount > 0;
+    }
+
+    public Set<String> sMembers(String key) {
+        return redisTemplate.opsForSet().members(key);
     }
 }

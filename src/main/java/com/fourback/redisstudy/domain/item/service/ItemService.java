@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,16 @@ public class ItemService {
     }
 
     public List<ItemInquiryResponseDto> getSome(List<String> itemIds) {
+        List<String> keys = itemIds.stream().map(itemId -> PrefixEnum.ITEM.getPrefix() + itemId).toList();
+
+        List<Map<String, String>> inquiryMaps = redisRepository.hGetAllFromKeys(keys);
+
+        return inquiryMaps.stream().map(ItemInquiryResponseDto::of).toList();
+    }
+
+    public List<ItemInquiryResponseDto> getSome(String userId) {
+        Set<String> itemIds = redisRepository.sMembers(PrefixEnum.USER_LIKE.getPrefix() + userId);
+
         List<String> keys = itemIds.stream().map(itemId -> PrefixEnum.ITEM.getPrefix() + itemId).toList();
 
         List<Map<String, String>> inquiryMaps = redisRepository.hGetAllFromKeys(keys);

@@ -51,4 +51,11 @@ public class ItemController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/{user-id}/liked")
+    public ResponseEntity<?> getSomeItems(@PathVariable("user-id") String userId) {
+        List<ItemInquiryResponseDto> itemInquiryResponseDtoList = itemService.getSome(userId);
+
+        return ResponseEntity.ok(itemInquiryResponseDtoList);
+    }
 }

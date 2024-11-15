@@ -66,4 +66,8 @@ public class RedisRepository {
     public Set<String> sMembers(String key) {
         return redisTemplate.opsForSet().members(key);
     }
+
+    public Set<String> sInter(String key, String anotherKey) {
+        return redisTemplate.opsForSet().intersect(key, anotherKey);
+    }
 }

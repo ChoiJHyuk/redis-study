@@ -41,4 +41,15 @@ public class ItemQueryService {
 
         return inquiryMaps.stream().map(ItemInquiryResponseDto::of).toList();
     }
+
+    public List<ItemInquiryResponseDto> getSome(String userId, String anotherUserId) {
+        Set<String> itemIds = redisRepository.sInter(
+                PrefixEnum.USER_LIKE.getPrefix() + userId, PrefixEnum.USER_LIKE.getPrefix() + anotherUserId);
+
+        List<String> keys = itemIds.stream().map(itemId -> PrefixEnum.ITEM.getPrefix() + itemId).toList();
+
+        List<Map<String, String>> inquiryMaps = redisRepository.hGetAllFromKeys(keys);
+
+        return inquiryMaps.stream().map(ItemInquiryResponseDto::of).toList();
+    }
 }

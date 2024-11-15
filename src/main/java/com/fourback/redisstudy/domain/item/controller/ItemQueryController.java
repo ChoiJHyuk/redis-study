@@ -35,4 +35,12 @@ public class ItemQueryController {
 
         return ResponseEntity.ok(itemInquiryResponseDtoList);
     }
+
+    @GetMapping("/intersection/{user-id}/{another-user-id}")
+    public ResponseEntity<?> getSomeItems(@PathVariable("user-id") String userId,
+                                          @PathVariable("another-user-id") String anotherUserId) {
+        List<ItemInquiryResponseDto> itemInquiryResponseDtoList = itemQueryService.getSome(userId, anotherUserId);
+
+        return ResponseEntity.ok(itemInquiryResponseDtoList);
+    }
 }

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -36,6 +37,23 @@ public class ItemInquiryResponseDto {
                 .views(Integer.parseInt(map.get("views")))
                 .likes(Integer.parseInt(map.get("likes")))
                 .bids(Integer.parseInt(map.get("bids")))
+                .build();
+    }
+
+    public static ItemInquiryResponseDto from(List<String> itemInfo){
+        return ItemInquiryResponseDto.builder()
+                .name(itemInfo.get(0))
+                .description(itemInfo.get(1))
+                .imageUrl(itemInfo.get(2))
+                .createAt(LocalDate.parse(itemInfo.get(3)))
+                .endingAt(LocalDate.parse(itemInfo.get(4)))
+                .ownerId(itemInfo.get(5))
+                .highestBidUserId(itemInfo.get(6))
+                .status(itemInfo.get(7))
+                .price(Double.parseDouble(itemInfo.get(8)))
+                .views(Integer.parseInt(itemInfo.get(9)))
+                .likes(Integer.parseInt(itemInfo.get(10)))
+                .bids(Integer.parseInt(itemInfo.get(11)))
                 .build();
     }
 }

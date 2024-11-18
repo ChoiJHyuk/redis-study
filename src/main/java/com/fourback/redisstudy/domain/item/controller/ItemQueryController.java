@@ -50,4 +50,12 @@ public class ItemQueryController {
 
         return ResponseEntity.ok(inquiryResponseDtoList);
     }
+
+    @GetMapping("/order-view")
+    public ResponseEntity<?> getSomeItemsByViewOrder(
+            @RequestParam(name = "offset", required = false, defaultValue = "0") Long offset) {
+        List<ItemInquiryResponseDto> inquiryResponseDtoList = itemQueryService.getSomeByOffset(offset);
+
+        return ResponseEntity.ok(inquiryResponseDtoList);
+    }
 }

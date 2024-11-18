@@ -2,12 +2,15 @@ package com.fourback.redisstudy.domain.item.repository;
 
 import com.fourback.redisstudy.global.common.enums.PrefixEnum;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.connection.SortParameters;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.query.SortQueryBuilder;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -40,5 +43,25 @@ public class ItemRepository {
             connection.zSetCommands().zAdd(PrefixEnum.ITEM_ENDING_AT.getPrefix().getBytes(), epochMilli, itemId.getBytes());
             return null;
         });
+    }
+
+    public List<String> sort(String key, Long offset) {
+        return redisTemplate.sort(SortQueryBuilder.sort(key)
+                .noSort()
+                .get(PrefixEnum.ITEM.getPrefix() + "*->name")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->description")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->imageUrl")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->createAt")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->endingAt")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->ownerId")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->highestBidUserId")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->status")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->price")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->views")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->likes")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->bids")
+                .order(SortParameters.Order.DESC)
+                .limit(offset, 10)
+                .build());
     }
 }

@@ -8,6 +8,7 @@ import com.fourback.redisstudy.global.common.repository.CommonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,5 +66,22 @@ public class ItemQueryService {
         List<Map<String, String>> inquiryMaps = commonRepository.hGetAllFromKeys(keys);
 
         return inquiryMaps.stream().map(ItemInquiryResponseDto::of).toList();
+    }
+
+    public List<ItemInquiryResponseDto> getSomeByOffset(Long offset) {
+        List<String> sort = itemRepository.sort(PrefixEnum.ITEM_VIEW.getPrefix(), offset);
+
+        int fieldCount = ItemInquiryResponseDto.class.getDeclaredFields().length;
+
+        List<ItemInquiryResponseDto> inquiryResponseDtoList = new ArrayList<>();
+
+        for (int i = 0; i < sort.size(); i += fieldCount) {
+            int end = Math.min(i + fieldCount, sort.size());
+            List<String> subList = sort.subList(i, end);
+
+            inquiryResponseDtoList.add(ItemInquiryResponseDto.from(subList));
+        }
+
+        return inquiryResponseDtoList;
     }
 }

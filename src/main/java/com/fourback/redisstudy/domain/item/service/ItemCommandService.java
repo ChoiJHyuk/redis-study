@@ -39,4 +39,8 @@ public class ItemCommandService {
             commonRepository.hIncrBy(PrefixEnum.ITEM.getPrefix() + itemId, "likes", -1);
         }
     }
+
+    public void create(String amount, String itemId) {
+        commonRepository.rPush(PrefixEnum.HISTORY.getPrefix() + itemId, amount);
+    }
 }

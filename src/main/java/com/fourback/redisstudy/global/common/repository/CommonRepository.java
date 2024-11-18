@@ -96,4 +96,13 @@ public class CommonRepository {
     public Boolean pfAdd(String key, String value) {
         return redisTemplate.opsForHyperLogLog().add(key, value)==1;
     }
+
+    // list
+    public void rPush(String key, String value) {
+        redisTemplate.opsForList().rightPush(key, value);
+    }
+
+    public List<String> lRange(String key, long start, long end){
+        return redisTemplate.opsForList().range(key, start, end);
+    }
 }

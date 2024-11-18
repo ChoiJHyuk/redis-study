@@ -20,7 +20,7 @@ public class ItemQueryService {
     private final ItemRepository itemRepository;
 
     public ItemDetailResponseDto get(String userId, String itemId) {
-        Boolean inserted = commonRepository.pfAdd(PrefixEnum.VIEW.getPrefix()+itemId, userId);
+        Boolean inserted = commonRepository.pfAdd(PrefixEnum.VIEW.getPrefix() + itemId, userId);
         if (inserted)
             itemRepository.incrementViewCount(itemId);
 
@@ -85,5 +85,11 @@ public class ItemQueryService {
         }
 
         return inquiryResponseDtoList;
+    }
+
+    public List<String> getBid(String itemId, Long offset) {
+        long start = -1 * offset - 10;
+        long end = -1 - offset;
+        return commonRepository.lRange(PrefixEnum.HISTORY.getPrefix() + itemId, start, end);
     }
 }

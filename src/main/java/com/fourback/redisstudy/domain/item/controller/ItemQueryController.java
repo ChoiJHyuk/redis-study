@@ -58,4 +58,11 @@ public class ItemQueryController {
 
         return ResponseEntity.ok(inquiryResponseDtoList);
     }
+
+    @GetMapping("/bid/{item-id}")
+    public ResponseEntity<?> getBid(@PathVariable("item-id") String itemId,
+                                    @RequestParam(name = "offset", required = false, defaultValue = "0") Long offset) {
+        List<String> bids = itemQueryService.getBid(itemId, offset);
+        return ResponseEntity.ok(bids);
+    }
 }

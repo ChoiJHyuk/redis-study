@@ -91,4 +91,9 @@ public class CommonRepository {
     public Double zScore(String key, String member) {
         return redisTemplate.opsForZSet().score(key, member);
     }
+
+    // HyperLogLog
+    public Boolean pfAdd(String key, String value) {
+        return redisTemplate.opsForHyperLogLog().add(key, value)==1;
+    }
 }

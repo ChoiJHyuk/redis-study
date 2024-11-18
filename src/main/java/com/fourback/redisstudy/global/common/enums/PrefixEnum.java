@@ -11,7 +11,8 @@ public enum PrefixEnum {
     USER_LIKE("user:like:"),
     USERNAME("username"),
     ITEM_VIEW("item:view"),
-    ITEM_ENDING_AT("item:endingAt");
+    ITEM_ENDING_AT("item:endingAt"),
+    VIEW("view:");
 
     private final String prefix;
 

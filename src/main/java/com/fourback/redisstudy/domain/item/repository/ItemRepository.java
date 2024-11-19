@@ -58,7 +58,7 @@ public class ItemRepository {
     }
 
     public void addOneAndStore(List<String> key, String[] value) {
-        redisTemplate.execute(addOneAndStoreScript, key, value);
+        redisTemplate.execute(addOneAndStoreScript, key, (Object) value);
     }
 
     public void setupForBidItem(String itemId, Map<String, String> updateMap, String amount) {

@@ -20,15 +20,13 @@ public class ItemQueryService {
     private final ItemRepository itemRepository;
 
     public ItemDetailResponseDto get(String userId, String itemId) {
-        itemRepository.addOneAndStore(
-                List.of(PrefixEnum.ITEM.getPrefix() + itemId,
+        itemRepository.addOneAndStore(List.of(PrefixEnum.ITEM.getPrefix() + itemId,
                         PrefixEnum.ITEM_VIEW.getPrefix(), PrefixEnum.VIEW.getPrefix() + itemId),
                 new String[]{itemId, userId});
 
         Map<String, String> inquiryMap = commonRepository.hGetAll(PrefixEnum.ITEM.getPrefix() + itemId);
 
         Boolean isLiked = commonRepository.sIsMember(PrefixEnum.USER_LIKE.getPrefix() + userId, itemId);
-
 
         return ItemDetailResponseDto.of(inquiryMap, isLiked);
     }

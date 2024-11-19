@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class RedissonAOP {
     private final RedissonClient redissonClient;
 
-    @Around("execution(public void com.fourback.redisstudy.domain.item.service.ItemCommandService.create(String, ..))")
+    @Around("execution(public void com.fourback.redisstudy.domain.item.service.ItemCommandService.bid(String, ..))")
     public void locking(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         String lockName = "lock:" + args[2].toString();

@@ -60,4 +60,18 @@ public class ItemRepository {
     public void addOneAndStore(List<String> key, String[] value) {
         redisTemplate.execute(addOneAndStoreScript, key, value);
     }
+
+    public void setupForBidItem(String itemId, Map<String, String> updateMap, String amount) {
+        String itemKey = PrefixEnum.ITEM.getPrefix() + itemId;
+        String historyKey = PrefixEnum.HISTORY.getPrefix() + itemId;
+
+        Map<byte[], byte[]> byteUpdateMaptMap = updateMap.entrySet().stream().collect(
+                Collectors.toMap(entry -> entry.getKey().getBytes(), entry -> entry.getValue().getBytes()));
+
+        redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+            connection.hashCommands().hMSet(itemKey.getBytes(), byteUpdateMaptMap);
+            connection.listCommands().rPush(historyKey.getBytes(), amount.getBytes());
+            return null;
+        });
+    }
 }

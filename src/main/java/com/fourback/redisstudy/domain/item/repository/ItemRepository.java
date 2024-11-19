@@ -21,28 +21,18 @@ public class ItemRepository {
     private final DefaultRedisScript<Void> addOneAndStoreScript;
     private final StringRedisTemplate redisTemplate;
 
-    public void incrementViewCount(String itemId) {
+    public void setupForCreateItem(String itemId, Map<String, String> createRequestMap, LocalDate endingAt) {
         String key = PrefixEnum.ITEM.getPrefix() + itemId;
 
-        redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
-            connection.hashCommands().hIncrBy(key.getBytes(), "views".getBytes(), 1L);
-            connection.zSetCommands().zIncrBy(PrefixEnum.ITEM_VIEW.getPrefix().getBytes(), 1D, itemId.getBytes());
-            return null;
-        });
-    }
-
-    public void setupForCreateItem(String itemId, Map<String, String> itemAttr, LocalDate endginAt) {
-        String key = PrefixEnum.ITEM.getPrefix() + itemId;
-
-        Map<byte[], byte[]> collect = itemAttr.entrySet().stream().collect(
+        Map<byte[], byte[]> byteCreateRequestMap = createRequestMap.entrySet().stream().collect(
                 Collectors.toMap(entry -> entry.getKey().getBytes(), entry -> entry.getValue().getBytes()));
 
-        long epochMilli = endginAt.atStartOfDay(ZoneId.of("Asia/Seoul")).toInstant().toEpochMilli();
+        long milliEndingAt = endingAt.atStartOfDay(ZoneId.of("Asia/Seoul")).toInstant().toEpochMilli();
 
         redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
-            connection.hashCommands().hMSet(key.getBytes(), collect);
+            connection.hashCommands().hMSet(key.getBytes(), byteCreateRequestMap);
             connection.zSetCommands().zAdd(PrefixEnum.ITEM_VIEW.getPrefix().getBytes(), 0, itemId.getBytes());
-            connection.zSetCommands().zAdd(PrefixEnum.ITEM_ENDING_AT.getPrefix().getBytes(), epochMilli, itemId.getBytes());
+            connection.zSetCommands().zAdd(PrefixEnum.ITEM_ENDING_AT.getPrefix().getBytes(), milliEndingAt, itemId.getBytes());
             return null;
         });
     }

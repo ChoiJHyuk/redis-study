@@ -19,7 +19,6 @@ public class ItemCommandService {
     private final ItemRepository itemRepository;
     private final CommonRepository commonRepository;
 
-
     public ItemCreateResponseDto create(ItemCreateRequestDto createRequestDto) {
         String itemId = RandomUtil.genId();
 
@@ -46,18 +45,18 @@ public class ItemCommandService {
 
     public void create(String amount, String userId, String itemId) {
         Map<String, String> itemInquiryMap = commonRepository.hGetAll(PrefixEnum.ITEM.getPrefix() + itemId);
-        if(itemInquiryMap.get("ownerId")==null){
+        if (itemInquiryMap.get("ownerId") == null) {
             throw new RuntimeException("저장되지 않은 아이템");
         }
-        if(Double.parseDouble(itemInquiryMap.get("price"))>=Double.parseDouble(amount)){
+        if (Double.parseDouble(itemInquiryMap.get("price")) >= Double.parseDouble(amount)) {
             throw new RuntimeException("현재 경매가보다 낮음");
         }
-        if(LocalDate.parse(itemInquiryMap.get("endingAt")).isBefore(LocalDate.now())){
+        if (LocalDate.parse(itemInquiryMap.get("endingAt")).isBefore(LocalDate.now())) {
             throw new RuntimeException("경매가 끝난 아이템");
         }
 
         Map<String, String> info = new HashMap<>();
-        info.put("bids", itemInquiryMap.get("bids")+1);
+        info.put("bids", itemInquiryMap.get("bids") + 1);
         info.put("price", amount);
         info.put("ownerId", userId);
 

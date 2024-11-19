@@ -48,15 +48,20 @@ public class ItemQueryService {
     }
 
     public List<ItemInquiryResponseDto> getSome(String userId, String anotherUserId) {
-        Set<String> itemIds = commonRepository.sInter(
-                PrefixEnum.USER_LIKE.getPrefix() + userId, PrefixEnum.USER_LIKE.getPrefix() + anotherUserId);
+        List<String> itemIds = commonRepository.sInter(PrefixEnum.USER_LIKE.getPrefix() + userId,
+                PrefixEnum.USER_LIKE.getPrefix() + anotherUserId).stream().toList();
 
         List<String> keys = itemIds.stream().map(itemId -> PrefixEnum.ITEM.getPrefix() + itemId).toList();
 
         List<Map<String, String>> inquiryMaps = commonRepository.hGetAllFromKeys(keys);
 
-//        return inquiryMaps.stream().map(ItemInquiryResponseDto::from).toList();
-        return null;
+        List<ItemInquiryResponseDto> itemInquiryResponseDtoList = new ArrayList<>();
+
+        for (int i = 0; i < itemIds.size(); i++) {
+            itemInquiryResponseDtoList.add(ItemInquiryResponseDto.of(itemIds.get(i), inquiryMaps.get(i)));
+        }
+
+        return itemInquiryResponseDtoList;
     }
 
     public List<ItemInquiryResponseDto> getSome(Long lastEndAt) {

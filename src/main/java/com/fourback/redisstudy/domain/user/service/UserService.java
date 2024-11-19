@@ -8,13 +8,13 @@ import com.fourback.redisstudy.domain.user.dto.response.UserLoginResponseDto;
 import com.fourback.redisstudy.domain.user.repository.UserRepository;
 import com.fourback.redisstudy.global.common.enums.PrefixEnum;
 import com.fourback.redisstudy.global.common.repository.CommonRepository;
-import com.fourback.redisstudy.global.common.util.EncryptionUtil;
 import com.fourback.redisstudy.global.common.util.RandomUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+import static com.fourback.redisstudy.global.common.util.EncryptionUtil.checkPassword;
 import static com.fourback.redisstudy.global.common.util.EncryptionUtil.encryptPassword;
 
 @Service
@@ -39,27 +39,27 @@ public class UserService {
         return UserCreateResponseDto.from(userId);
     }
 
-    public UserInquiryResponseDto get(String userId) {
-        Map<String, String> inquiryMap = commonRepository.hGetAll(PrefixEnum.USER.getPrefix() + userId);
-
-        return UserInquiryResponseDto.from(inquiryMap);
-    }
-
     public UserLoginResponseDto login(UserLoginRequestDto loginRequestDto) {
-        Double decimalId = commonRepository.zScore(PrefixEnum.USERNAME.getPrefix(), loginRequestDto.getUsername());
-        if (decimalId == null) {
+        Double decimalUserId = commonRepository.zScore(PrefixEnum.USERNAME.getPrefix(), loginRequestDto.getUsername());
+
+        if (decimalUserId == null) {
             throw new RuntimeException("존재하지 않은 아이디");
         }
 
-        String userId = Integer.toHexString(decimalId.intValue());
+        String userId = Integer.toHexString(decimalUserId.intValue());
 
-        Map<String, String> userInquiryMap = commonRepository.hGetAll(PrefixEnum.USER.getPrefix() + userId);
-        String hashedPassword = userInquiryMap.get("password");
+        Map<String, String> inquiryMap = commonRepository.hGetAll(PrefixEnum.USER.getPrefix() + userId);
 
-        if (!EncryptionUtil.checkPassword(loginRequestDto.getPassword(), hashedPassword)) {
+        if (!checkPassword(loginRequestDto.getPassword(), inquiryMap.get("password"))) {
             throw new RuntimeException("비밀번호 불일치");
         }
 
         return UserLoginResponseDto.from(userId);
+    }
+
+    public UserInquiryResponseDto get(String userId) {
+        Map<String, String> inquiryMap = commonRepository.hGetAll(PrefixEnum.USER.getPrefix() + userId);
+
+        return UserInquiryResponseDto.from(inquiryMap);
     }
 }

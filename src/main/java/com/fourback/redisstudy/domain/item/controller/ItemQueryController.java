@@ -22,7 +22,7 @@ public class ItemQueryController {
         return ResponseEntity.ok(inquiryResponseDto);
     }
 
-    @GetMapping("/liked/{user-id}")
+    @GetMapping("/{user-id}/liked")
     public ResponseEntity<?> getSomeLikedItems(@PathVariable("user-id") String userId) {
         List<ItemInquiryResponseDto> inquiryResponseDtoList = itemQueryService.getSome(userId);
 

@@ -38,7 +38,7 @@ public class ItemQueryService {
 
         List<Map<String, String>> inquiryMaps = commonRepository.hGetAllFromKeys(keys);
 
-        return inquiryMaps.stream().map(ItemInquiryResponseDto::of).toList();
+        return inquiryMaps.stream().map(ItemInquiryResponseDto::from).toList();
     }
 
     public List<ItemInquiryResponseDto> getSome(String userId, String anotherUserId) {
@@ -49,7 +49,7 @@ public class ItemQueryService {
 
         List<Map<String, String>> inquiryMaps = commonRepository.hGetAllFromKeys(keys);
 
-        return inquiryMaps.stream().map(ItemInquiryResponseDto::of).toList();
+        return inquiryMaps.stream().map(ItemInquiryResponseDto::from).toList();
     }
 
     public List<ItemInquiryResponseDto> getSome(Long lastEndAt) {
@@ -58,7 +58,7 @@ public class ItemQueryService {
 
         List<Map<String, String>> inquiryMaps = commonRepository.hGetAllFromKeys(keys);
 
-        return inquiryMaps.stream().map(ItemInquiryResponseDto::of).toList();
+        return inquiryMaps.stream().map(ItemInquiryResponseDto::from).toList();
     }
 
     public List<ItemInquiryResponseDto> getSomeByOffset(Long offset) {

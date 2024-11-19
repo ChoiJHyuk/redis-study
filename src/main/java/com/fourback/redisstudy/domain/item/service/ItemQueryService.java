@@ -99,6 +99,7 @@ public class ItemQueryService {
     public List<String> getBid(String itemId, Long offset) {
         long start = -1 * offset - 10;
         long end = -1 - offset;
+
         return commonRepository.lRange(PrefixEnum.HISTORY.getPrefix() + itemId, start, end);
     }
 }

@@ -25,16 +25,12 @@ public class RedissonAOP {
         try {
             boolean lockable = lock.tryLock(1000, TimeUnit.MILLISECONDS);
             if (!lockable) {
-                System.out.println("lock fail");
                 return;
             }
-            System.out.println("lock ok");
             joinPoint.proceed();
         } catch (InterruptedException e) {
-            System.out.println("lock interrupted");
             e.printStackTrace();
         } finally {
-            System.out.println("lock end");
             lock.unlock();
         }
     }

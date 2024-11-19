@@ -20,9 +20,10 @@ public class ItemQueryService {
     private final ItemRepository itemRepository;
 
     public ItemDetailResponseDto get(String userId, String itemId) {
-        Boolean inserted = commonRepository.pfAdd(PrefixEnum.VIEW.getPrefix() + itemId, userId);
-        if (inserted)
-            itemRepository.incrementViewCount(itemId);
+        itemRepository.addOneAndStore(
+                List.of(PrefixEnum.ITEM.getPrefix() + itemId,
+                        PrefixEnum.ITEM_VIEW.getPrefix(), PrefixEnum.VIEW.getPrefix() + itemId),
+                new String[]{itemId, userId});
 
         Map<String, String> inquiryMap = commonRepository.hGetAll(PrefixEnum.ITEM.getPrefix() + itemId);
 

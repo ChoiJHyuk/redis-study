@@ -6,6 +6,7 @@ import org.springframework.data.redis.connection.SortParameters;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.query.SortQueryBuilder;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 public class ItemRepository {
+    private final DefaultRedisScript<Void> addOneAndStoreScript;
     private final StringRedisTemplate redisTemplate;
 
     public void incrementViewCount(String itemId) {
@@ -63,5 +65,9 @@ public class ItemRepository {
                 .order(SortParameters.Order.DESC)
                 .limit(offset, 10)
                 .build());
+    }
+
+    public void addOneAndStore(List<String> key, String[] value) {
+        redisTemplate.execute(addOneAndStoreScript, key, value);
     }
 }

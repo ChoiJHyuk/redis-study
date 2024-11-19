@@ -9,6 +9,10 @@ import com.fourback.redisstudy.global.common.util.RandomUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class ItemCommandService {
@@ -40,7 +44,25 @@ public class ItemCommandService {
         }
     }
 
-    public void create(String amount, String itemId) {
+    public void create(String amount, String userId, String itemId) {
+        Map<String, String> itemInquiryMap = commonRepository.hGetAll(PrefixEnum.ITEM.getPrefix() + itemId);
+        if(itemInquiryMap.get("ownerId")==null){
+            throw new RuntimeException("저장되지 않은 아이템");
+        }
+        if(Long.parseLong(itemInquiryMap.get("price"))>=Long.parseLong(amount)){
+            throw new RuntimeException("현재 경매가보다 낮음");
+        }
+        if(LocalDate.parse(itemInquiryMap.get("endingAt")).isAfter(LocalDate.now())){
+            throw new RuntimeException("경매가 끝난 아이템");
+        }
+
+        Map<String, String> info = new HashMap<>();
+        info.put("bids", itemInquiryMap.get("bids")+1);
+        info.put("price", amount);
+        info.put("ownerId", userId);
+
+
+        commonRepository.hSet(PrefixEnum.ITEM.getPrefix() + itemId, info);
         commonRepository.rPush(PrefixEnum.HISTORY.getPrefix() + itemId, amount);
     }
 }

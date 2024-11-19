@@ -34,9 +34,10 @@ public class ItemCommandController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/bid/{item-id}")
-    public ResponseEntity<?> createBid(@RequestParam("amount") String amount, @PathVariable("item-id") String itemId) {
-        itemCommandService.create(amount, itemId);
+    @PostMapping("/bid/{user-id}/{item-id}")
+    public ResponseEntity<?> createBid(@RequestParam("amount") String amount,
+                                       @PathVariable("user-id") String userId, @PathVariable("item-id") String itemId) {
+        itemCommandService.create(amount, userId, itemId);
 
         return ResponseEntity.ok().build();
     }

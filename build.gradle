@@ -23,7 +23,8 @@ dependencies {
     implementation 'org.mindrot:jbcrypt:0.4'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    implementation 'org.redisson:redisson:3.2.0'
+    implementation 'org.redisson:redisson:3.39.0'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
 }
 
 tasks.named('test') {

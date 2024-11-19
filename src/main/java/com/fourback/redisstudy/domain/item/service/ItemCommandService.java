@@ -49,10 +49,10 @@ public class ItemCommandService {
         if(itemInquiryMap.get("ownerId")==null){
             throw new RuntimeException("저장되지 않은 아이템");
         }
-        if(Long.parseLong(itemInquiryMap.get("price"))>=Long.parseLong(amount)){
+        if(Double.parseDouble(itemInquiryMap.get("price"))>=Double.parseDouble(amount)){
             throw new RuntimeException("현재 경매가보다 낮음");
         }
-        if(LocalDate.parse(itemInquiryMap.get("endingAt")).isAfter(LocalDate.now())){
+        if(LocalDate.parse(itemInquiryMap.get("endingAt")).isBefore(LocalDate.now())){
             throw new RuntimeException("경매가 끝난 아이템");
         }
 

@@ -1,6 +1,7 @@
 package com.fourback.redisstudy.global.config;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,7 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 
+@Getter
 @Configuration
 @Setter(AccessLevel.PACKAGE)
 @ConfigurationProperties("spring.data.redis")

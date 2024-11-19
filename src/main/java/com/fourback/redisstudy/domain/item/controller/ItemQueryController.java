@@ -22,13 +22,6 @@ public class ItemQueryController {
         return ResponseEntity.ok(inquiryResponseDto);
     }
 
-    @GetMapping
-    public ResponseEntity<?> getSomeItems(@RequestBody List<String> itemIds) {
-        List<ItemInquiryResponseDto> inquiryResponseDtoList = itemQueryService.getSome(itemIds);
-
-        return ResponseEntity.ok(inquiryResponseDtoList);
-    }
-
     @GetMapping("/liked/{user-id}")
     public ResponseEntity<?> getSomeLikedItems(@PathVariable("user-id") String userId) {
         List<ItemInquiryResponseDto> inquiryResponseDtoList = itemQueryService.getSome(userId);

@@ -33,14 +33,6 @@ public class ItemQueryService {
         return ItemDetailResponseDto.of(inquiryMap, isLiked);
     }
 
-    public List<ItemInquiryResponseDto> getSome(List<String> itemIds) {
-        List<String> keys = itemIds.stream().map(itemId -> PrefixEnum.ITEM.getPrefix() + itemId).toList();
-
-        List<Map<String, String>> inquiryMaps = commonRepository.hGetAllFromKeys(keys);
-
-        return inquiryMaps.stream().map(ItemInquiryResponseDto::of).toList();
-    }
-
     public List<ItemInquiryResponseDto> getSome(String userId) {
         Set<String> itemIds = commonRepository.sMembers(PrefixEnum.USER_LIKE.getPrefix() + userId);
 

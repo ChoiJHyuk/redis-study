@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -64,14 +63,20 @@ public class ItemQueryService {
         return itemInquiryResponseDtoList;
     }
 
-    public List<ItemInquiryResponseDto> getSome(Long lastEndAt) {
-        Set<String> itemIds = commonRepository.zRange(lastEndAt);
+    public List<ItemInquiryResponseDto> getSomeByEndingAt(Long lastEndAt) {
+        List<String> itemIds = commonRepository.zRange(lastEndAt).stream().toList();
+
         List<String> keys = itemIds.stream().map(itemId -> PrefixEnum.ITEM.getPrefix() + itemId).toList();
 
         List<Map<String, String>> inquiryMaps = commonRepository.hGetAllFromKeys(keys);
 
-//        return inquiryMaps.stream().map(ItemInquiryResponseDto::from).toList();
-        return null;
+        List<ItemInquiryResponseDto> itemInquiryResponseDtoList = new ArrayList<>();
+
+        for (int i = 0; i < itemIds.size(); i++) {
+            itemInquiryResponseDtoList.add(ItemInquiryResponseDto.of(itemIds.get(i), inquiryMaps.get(i)));
+        }
+
+        return itemInquiryResponseDtoList;
     }
 
     public List<ItemInquiryResponseDto> getSomeByOffset(Long offset) {

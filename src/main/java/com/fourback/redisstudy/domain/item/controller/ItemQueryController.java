@@ -39,7 +39,7 @@ public class ItemQueryController {
 
     @GetMapping("/order-end")
     public ResponseEntity<?> getSomeItemsByEndOrder(@RequestParam(value = "last-end-at", required = false) Long lastEndAt) {
-        List<ItemInquiryResponseDto> inquiryResponseDtoList = itemQueryService.getSome(lastEndAt);
+        List<ItemInquiryResponseDto> inquiryResponseDtoList = itemQueryService.getSomeByEndingAt(lastEndAt);
 
         return ResponseEntity.ok(inquiryResponseDtoList);
     }

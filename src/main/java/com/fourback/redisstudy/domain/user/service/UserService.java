@@ -5,6 +5,7 @@ import com.fourback.redisstudy.domain.user.dto.request.UserLoginRequestDto;
 import com.fourback.redisstudy.domain.user.dto.response.UserCreateResponseDto;
 import com.fourback.redisstudy.domain.user.dto.response.UserInquiryResponseDto;
 import com.fourback.redisstudy.domain.user.dto.response.UserLoginResponseDto;
+import com.fourback.redisstudy.domain.user.repository.UserRepository;
 import com.fourback.redisstudy.global.common.enums.PrefixEnum;
 import com.fourback.redisstudy.global.common.repository.CommonRepository;
 import com.fourback.redisstudy.global.common.util.EncryptionUtil;
@@ -14,26 +15,26 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+import static com.fourback.redisstudy.global.common.util.EncryptionUtil.encryptPassword;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private final UserRepository userRepository;
     private final CommonRepository commonRepository;
 
     public UserCreateResponseDto create(UserCreateRequestDto createRequestDto) {
         String userId = RandomUtil.genId();
-
         String username = createRequestDto.getUsername();
 
-        if (commonRepository.sIsMember(PrefixEnum.UNIQUE_USER.getPrefix(), username)) {
+        if (commonRepository.zScore(PrefixEnum.USERNAME.getPrefix(), username) != null) {
             throw new RuntimeException("중복된 아이디");
         }
 
-        String encryptPassword = EncryptionUtil.encryptPassword(createRequestDto.getPassword());
-        createRequestDto.setPassword(encryptPassword);
+        String encryptedPassword = encryptPassword(createRequestDto.getPassword());
+        createRequestDto.setPassword(encryptedPassword);
 
-        commonRepository.hSet(PrefixEnum.USER.getPrefix() + userId, createRequestDto.toMap());
-        commonRepository.sAdd(PrefixEnum.UNIQUE_USER.getPrefix(), username);
-        commonRepository.zAdd(PrefixEnum.USERNAME.getPrefix(), username, Integer.parseInt(userId, 16));
+        userRepository.setupForCreateUser(userId, createRequestDto.toMap());
 
         return UserCreateResponseDto.from(userId);
     }

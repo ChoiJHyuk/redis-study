@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -18,15 +17,10 @@ import java.util.Set;
 @Repository
 @RequiredArgsConstructor
 public class CommonRepository {
-    private final StringRedisTemplate redisTemplate;
     private final ObjectMapper objectMapper;
+    private final StringRedisTemplate redisTemplate;
 
-    //hash
-    public void hSet(String key, Map<String, String> fields) {
-        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
-        hashOperations.putAll(key, fields);
-    }
-
+    // hash
     public Map<String, String> hGetAll(String key) {
         HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
 
@@ -42,22 +36,12 @@ public class CommonRepository {
         });
 
         return objectMapper.convertValue(
-                objects, objectMapper.getTypeFactory().constructCollectionType(List.class, Map.class)
-        );
+                objects, objectMapper.getTypeFactory().constructCollectionType(List.class, Map.class));
     }
 
     public void hIncrBy(String key, String field, long amount) {
         HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
         hashOperations.increment(key, field, amount);
-    }
-
-    public Set<String> zRange(Long lastEndAt) {
-        Long millisTime = lastEndAt;
-        if(millisTime == null)
-            millisTime = LocalDate.now().atStartOfDay(ZoneId.of("Asia/Seoul")).toInstant().toEpochMilli();
-
-        return redisTemplate.opsForZSet().rangeByScore(
-                PrefixEnum.ITEM_ENDING_AT.getPrefix(), millisTime, Long.MAX_VALUE, 0, 3L);
     }
 
     // set
@@ -73,6 +57,7 @@ public class CommonRepository {
 
     public Boolean sRem(String key, String member) {
         Long remCount = redisTemplate.opsForSet().remove(key, member);
+
         return remCount != null && remCount > 0;
     }
 
@@ -85,25 +70,22 @@ public class CommonRepository {
     }
 
     // sorted set
-    public void zAdd(String key, String member, double score) {
-        redisTemplate.opsForZSet().add(key, member, score);
-    }
-
     public Double zScore(String key, String member) {
         return redisTemplate.opsForZSet().score(key, member);
     }
 
-    // HyperLogLog
-    public Boolean pfAdd(String key, String value) {
-        return redisTemplate.opsForHyperLogLog().add(key, value)==1;
+    public Set<String> zRange(Long lastEndAt) {
+        Long millisTime = lastEndAt;
+
+        if (millisTime == null)
+            millisTime = LocalDate.now().atStartOfDay(ZoneId.of("Asia/Seoul")).toInstant().toEpochMilli();
+
+        return redisTemplate.opsForZSet().rangeByScore(
+                PrefixEnum.ITEM_ENDING_AT.getPrefix(), millisTime, Long.MAX_VALUE, 0, 3L);
     }
 
     // list
-    public void rPush(String key, String value) {
-        redisTemplate.opsForList().rightPush(key, value);
-    }
-
-    public List<String> lRange(String key, long start, long end){
+    public List<String> lRange(String key, long start, long end) {
         return redisTemplate.opsForList().range(key, start, end);
     }
 }

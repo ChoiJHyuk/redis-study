@@ -32,13 +32,19 @@ public class ItemQueryService {
     }
 
     public List<ItemInquiryResponseDto> getSome(String userId) {
-        Set<String> itemIds = commonRepository.sMembers(PrefixEnum.USER_LIKE.getPrefix() + userId);
+        List<String> itemIds = commonRepository.sMembers(PrefixEnum.USER_LIKE.getPrefix() + userId).stream().toList();
 
         List<String> keys = itemIds.stream().map(itemId -> PrefixEnum.ITEM.getPrefix() + itemId).toList();
 
         List<Map<String, String>> inquiryMaps = commonRepository.hGetAllFromKeys(keys);
 
-        return inquiryMaps.stream().map(ItemInquiryResponseDto::from).toList();
+        List<ItemInquiryResponseDto> itemInquiryResponseDtoList = new ArrayList<>();
+
+        for (int i = 0; i < itemIds.size(); i++) {
+            itemInquiryResponseDtoList.add(ItemInquiryResponseDto.of(itemIds.get(i), inquiryMaps.get(i)));
+        }
+
+        return itemInquiryResponseDtoList;
     }
 
     public List<ItemInquiryResponseDto> getSome(String userId, String anotherUserId) {
@@ -49,7 +55,8 @@ public class ItemQueryService {
 
         List<Map<String, String>> inquiryMaps = commonRepository.hGetAllFromKeys(keys);
 
-        return inquiryMaps.stream().map(ItemInquiryResponseDto::from).toList();
+//        return inquiryMaps.stream().map(ItemInquiryResponseDto::from).toList();
+        return null;
     }
 
     public List<ItemInquiryResponseDto> getSome(Long lastEndAt) {
@@ -58,7 +65,8 @@ public class ItemQueryService {
 
         List<Map<String, String>> inquiryMaps = commonRepository.hGetAllFromKeys(keys);
 
-        return inquiryMaps.stream().map(ItemInquiryResponseDto::from).toList();
+//        return inquiryMaps.stream().map(ItemInquiryResponseDto::from).toList();
+        return null;
     }
 
     public List<ItemInquiryResponseDto> getSomeByOffset(Long offset) {

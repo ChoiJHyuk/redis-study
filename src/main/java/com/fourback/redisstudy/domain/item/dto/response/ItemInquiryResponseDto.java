@@ -13,6 +13,7 @@ public class ItemInquiryResponseDto {
     private String name;
     private Integer bids;
     private Double price;
+    private String itemId;
     private Integer views;
     private Integer likes;
     private String status;
@@ -23,11 +24,12 @@ public class ItemInquiryResponseDto {
     private String description;
     private String highestBidUserId;
 
-    public static ItemInquiryResponseDto from(Map<String, String> map) {
+    public static ItemInquiryResponseDto of(String itemId, Map<String, String> map) {
         return ItemInquiryResponseDto.builder()
                 .name(map.get("name"))
                 .bids(Integer.parseInt(map.get("bids")))
                 .price(Double.parseDouble(map.get("price")))
+                .itemId(itemId)
                 .views(Integer.parseInt(map.get("views")))
                 .likes(Integer.parseInt(map.get("likes")))
                 .status(map.get("status"))

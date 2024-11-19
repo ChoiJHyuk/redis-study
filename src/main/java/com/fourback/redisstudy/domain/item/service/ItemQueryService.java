@@ -79,16 +79,16 @@ public class ItemQueryService {
         return itemInquiryResponseDtoList;
     }
 
-    public List<ItemInquiryResponseDto> getSomeByOffset(Long offset) {
-        List<String> sort = itemRepository.sort(PrefixEnum.ITEM_VIEW.getPrefix(), offset);
+    public List<ItemInquiryResponseDto> getSomeByView(Long offset) {
+        List<String> itemInfoList = itemRepository.queryItemOrderByView(PrefixEnum.ITEM_VIEW.getPrefix(), offset);
 
         int fieldCount = ItemInquiryResponseDto.class.getDeclaredFields().length;
 
         List<ItemInquiryResponseDto> inquiryResponseDtoList = new ArrayList<>();
 
-        for (int i = 0; i < sort.size(); i += fieldCount) {
-            int end = Math.min(i + fieldCount, sort.size());
-            List<String> subList = sort.subList(i, end);
+        for (int i = 0; i < itemInfoList.size(); i += fieldCount) {
+            int end = Math.min(i + fieldCount, itemInfoList.size());
+            List<String> subList = itemInfoList.subList(i, end);
 
             inquiryResponseDtoList.add(ItemInquiryResponseDto.from(subList));
         }

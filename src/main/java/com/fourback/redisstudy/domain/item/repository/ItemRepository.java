@@ -37,21 +37,22 @@ public class ItemRepository {
         });
     }
 
-    public List<String> sort(String key, Long offset) {
+    public List<String> queryItemOrderByView(String key, Long offset) {
         return redisTemplate.sort(SortQueryBuilder.sort(key)
                 .noSort()
                 .get(PrefixEnum.ITEM.getPrefix() + "*->name")
-                .get(PrefixEnum.ITEM.getPrefix() + "*->description")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->bids")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->price")
+                .get("#")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->views")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->likes")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->status")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->ownerId")
                 .get(PrefixEnum.ITEM.getPrefix() + "*->imageUrl")
                 .get(PrefixEnum.ITEM.getPrefix() + "*->createAt")
                 .get(PrefixEnum.ITEM.getPrefix() + "*->endingAt")
-                .get(PrefixEnum.ITEM.getPrefix() + "*->ownerId")
+                .get(PrefixEnum.ITEM.getPrefix() + "*->description")
                 .get(PrefixEnum.ITEM.getPrefix() + "*->highestBidUserId")
-                .get(PrefixEnum.ITEM.getPrefix() + "*->status")
-                .get(PrefixEnum.ITEM.getPrefix() + "*->price")
-                .get(PrefixEnum.ITEM.getPrefix() + "*->views")
-                .get(PrefixEnum.ITEM.getPrefix() + "*->likes")
-                .get(PrefixEnum.ITEM.getPrefix() + "*->bids")
                 .order(SortParameters.Order.DESC)
                 .limit(offset, 10)
                 .build());

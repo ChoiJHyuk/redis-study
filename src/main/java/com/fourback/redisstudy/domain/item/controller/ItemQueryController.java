@@ -47,7 +47,7 @@ public class ItemQueryController {
     @GetMapping("/order-view")
     public ResponseEntity<?> getSomeItemsByViewOrder(
             @RequestParam(name = "offset", required = false, defaultValue = "0") Long offset) {
-        List<ItemInquiryResponseDto> inquiryResponseDtoList = itemQueryService.getSomeByOffset(offset);
+        List<ItemInquiryResponseDto> inquiryResponseDtoList = itemQueryService.getSomeByView(offset);
 
         return ResponseEntity.ok(inquiryResponseDtoList);
     }

@@ -4,16 +4,15 @@ import lombok.Getter;
 
 @Getter
 public enum PrefixEnum {
-
     USER("user:"),
     ITEM("item:"),
-    UNIQUE_USER("user:unique"),
-    USER_LIKE("user:like:"),
+    VIEW("view:"),
+    HISTORY("history:"),
     USERNAME("username"),
     ITEM_VIEW("item:view"),
-    ITEM_ENDING_AT("item:endingAt"),
-    VIEW("view:"),
-    HISTORY("history:");
+    USER_LIKE("user:like:"),
+    UNIQUE_USER("user:unique"),
+    ITEM_ENDING_AT("item:endingAt");
 
     private final String prefix;
 
